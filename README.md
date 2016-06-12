@@ -1,3 +1,3 @@
 # the-python-alliance
 
-Under VERY heavy development, do NOT use yet.
+You can use it if you want, it's (mostly) functional.
