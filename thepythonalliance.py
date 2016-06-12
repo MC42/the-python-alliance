@@ -1,5 +1,6 @@
 import requests
 import datetime
+import sys
 
 now = datetime.datetime.now()
 
@@ -8,6 +9,7 @@ now = datetime.datetime.now()
 
 initials = 'TF'
 github = "https://github.com/MC42/"
+teamToHighlight = str("1257")  #Enter your own team here!
 
 baseURL = 'http://www.thebluealliance.com/api/v2/'
 header = {'X-TBA-App-Id': 'frc1257:thepythonalliance:beta'} #Yay, version strings....
@@ -22,8 +24,6 @@ class bcolors:
     ENDC = '\033[0m'
     BOLD = '\033[1m'
     UNDERLINE = '\033[4m'
-
-
 
 class tba:
 	def get_team(self):
@@ -50,6 +50,8 @@ class tba:
 				print('Country: \t' + bcolors.OKGREEN + jsonified['country_name']+ bcolors.ENDC )
 		if (jsonified['location'] == None) and (jsonified['website'] == None):
 			print('\nThere is no information avalible for Team ' + bcolors.HEADER + str(team) + bcolors.ENDC + '\nThis team has likely since been dissolved.')
+		if (team == teamToHighlight):
+			print(bcolors.WARNING + 'You\'re looking at your own team.  Or you\'re debugging...' + bcolors.ENDC)
 	
 
 	def get_events(self, year):
@@ -128,7 +130,7 @@ class tba:
 		#print(district_json)
 		print(bcolors.HEADER +  district.upper() + ' District Rankings (' + str(now.year)+ bcolors.ENDC + ')')
 		for districts in district_json:
-			if ((districts['team_key'][3:]) == '1257'): ## Whoops, easter egg?
+			if ((districts['team_key'][3:]) == teamToHighlight): ## Whoops, easter egg?
 				print(bcolors.OKBLUE + districts['team_key'].upper() + bcolors.ENDC + '\t\t' + bcolors.RED + str(districts['rank']) + bcolors.ENDC +  '\tPoints: ' + bcolors.WARNING + str(districts['point_total']) + bcolors.ENDC + '\tName: ' + bcolors.OKGREEN + tba.get_team_name(districts['team_key'][3:] ) + bcolors.ENDC)
 			else:
 				print(districts['team_key'].upper() + '\t\t' + bcolors.RED + str(districts['rank']) + bcolors.ENDC +  '\tPoints: ' + bcolors.WARNING + str(districts['point_total']) + bcolors.ENDC + '\tName: ' + bcolors.OKGREEN + tba.get_team_name(districts['team_key'][3:] ) + bcolors.ENDC)
@@ -146,9 +148,6 @@ class tba:
 		response = requests.get(myRequest, headers=header)
 		jsonified = response.json()
 		return jsonified['rookie_year']
-
-
-#team = input('Please enter the team number of an FRC team: ')
 
 print(bcolors.HEADER + 'The Blue Alliance (Python Edition)' + bcolors.ENDC)
 print('Please enter a section of the site to load:')
