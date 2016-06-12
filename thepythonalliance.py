@@ -8,23 +8,26 @@ now = datetime.datetime.now()
 
 initials = 'TF'
 github = "https://github.com/MC42/"
+
+baseURL = 'http://www.thebluealliance.com/api/v2/'
+header = {'X-TBA-App-Id': 'frc1257:thepythonalliance:beta'} #Yay, version strings....
+
+
 class bcolors:
     HEADER = '\033[95m'
     OKBLUE = '\033[94m'
     OKGREEN = '\033[92m'
     WARNING = '\033[93m'
-    FAIL = '\033[91m'
+    RED = '\033[91m'
     ENDC = '\033[0m'
     BOLD = '\033[1m'
     UNDERLINE = '\033[4m'
 
 
-baseURL = 'http://www.thebluealliance.com/api/v2/'
-header = {'X-TBA-App-Id': 'frc1257:thepythonalliance:alpha'} #Yay, version strings....
 
 class tba:
 	def get_team(self):
-		team = input('Enter team: ')
+		team = raw_input('Please enter a team:')
 		myRequest = (baseURL + 'team/frc' + str(team))
 		response = requests.get(myRequest, headers=header)
 		jsonified = response.json()
@@ -78,7 +81,8 @@ class tba:
 			print('--------------------------')
 			t = raw_input('') #Just to hold the location until they hit enter.
 
-	def get_all_team(self, page):
+	def get_all_team(self):
+		page = raw_input('Enter a page number please: ')
 		myRequest = (baseURL + 'teams/' + str(page))
 		response = requests.get(myRequest, headers=header)
 		jsonified = response.json()
@@ -118,16 +122,31 @@ class tba:
 
 	def get_distrank(self):
 		district=raw_input('Please enter a district code (Hint, can be gotten with \'d\' command): ')		
-		myRequest = (baseURL + 'district/' + district + '/' + str(now.year) + '/rankings')
+		myRequest = (baseURL + 'district/' + district.lower() + '/' + str(now.year) + '/rankings')
 		response = requests.get(myRequest, headers=header)
 		district_json = response.json()
-		print(district_json)
+		#print(district_json)
 		print(bcolors.HEADER +  district.upper() + ' District Rankings (' + str(now.year)+ bcolors.ENDC + ')')
 		for districts in district_json:
-			print('Number: \t' + districts['team_key'].upper() + '\t\tPoints: ' + str(districts['point_total']))
+			if ((districts['team_key'][3:]) == '1257'): ## Whoops, easter egg?
+				print(bcolors.OKBLUE + districts['team_key'].upper() + bcolors.ENDC + '\t\t' + bcolors.RED + str(districts['rank']) + bcolors.ENDC +  '\tPoints: ' + bcolors.WARNING + str(districts['point_total']) + bcolors.ENDC + '\tName: ' + bcolors.OKGREEN + tba.get_team_name(districts['team_key'][3:] ) + bcolors.ENDC)
+			else:
+				print(districts['team_key'].upper() + '\t\t' + bcolors.RED + str(districts['rank']) + bcolors.ENDC +  '\tPoints: ' + bcolors.WARNING + str(districts['point_total']) + bcolors.ENDC + '\tName: ' + bcolors.OKGREEN + tba.get_team_name(districts['team_key'][3:] ) + bcolors.ENDC)
 
-
+	def get_team_name(self, team_no):
 		
+		myRequest = (baseURL + 'team/frc' + str(team_no))
+		response = requests.get(myRequest, headers=header)
+		jsonified = response.json()
+		return jsonified['nickname']
+
+	def get_rookie_year(self, team_no):
+
+		myRequest = (baseURL + 'team/frc' + str(team_no))
+		response = requests.get(myRequest, headers=header)
+		jsonified = response.json()
+		return jsonified['rookie_year']
+
 
 #team = input('Please enter the team number of an FRC team: ')
 
@@ -141,18 +160,17 @@ print('\'dr\' or \'distrank\' for district rankings for a specific district.')
 
 tba = tba()
 command = raw_input('')
-if ((command is 'e') or (command is 'events')):
+command = command.split(' ')
+
+if ((command[0] is 'e') or (command[0] == 'events')):
 	tba.get_events(now.year)
-
-elif ((command is 't') or (command is 'team')):
+elif ((command[0] is 't') or (command[0] == 'team')):
 	tba.get_team()
-
-elif ((command is 'a') or (command is 'all')):
-	global_page = input('Enter page number: ')
-	tba.get_all_team(global_page)
-elif ((command is 'd') or (command is 'district')):
+elif ((command[0] is 'a') or (command[0] == 'all')):
+	tba.get_all_team()
+elif ((command[0] is 'd') or (command[0] == 'district')):
 	tba.get_districts()
-elif ((command == 'dr') or (command is 'dist')):
+elif ((command[0] == 'dr') or (command[0] == 'dist')):
 	tba.get_distrank()
 else:
 	print('Please enter a valid command.')
