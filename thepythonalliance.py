@@ -106,6 +106,26 @@ class tba:
 			if (team['location'] == None) and (team['website'] == None):
 				print('\nThere is no information avalible for Team ' + bcolors.HEADER + str(team['team_number']) + bcolors.ENDC + '\nThis team has likely since been dissolved.')
 
+	def get_districts(self):
+		myRequest = (baseURL + 'districts/' + str(now.year))
+		response = requests.get(myRequest, headers=header)
+		district_json = response.json()
+		#print(district_json)
+		print(bcolors.HEADER + 'FIRST Districts (' + str(now.year)+ bcolors.ENDC + ')')
+		for districts in district_json:
+			print(bcolors.OKGREEN + districts['key'].upper() + bcolors.ENDC +  '\t\t' + bcolors.OKBLUE + districts['name'] + bcolors.ENDC)
+
+
+	def get_distrank(self):
+		district=raw_input('Please enter a district code (Hint, can be gotten with \'d\' command): ')		
+		myRequest = (baseURL + 'district/' + district + '/' + str(now.year) + '/rankings')
+		response = requests.get(myRequest, headers=header)
+		district_json = response.json()
+		print(district_json)
+		print(bcolors.HEADER +  district.upper() + ' District Rankings (' + str(now.year)+ bcolors.ENDC + ')')
+		for districts in district_json:
+			print('Number: \t' + districts['team_key'].upper() + '\t\tPoints: ' + str(districts['point_total']))
+
 
 		
 
@@ -116,6 +136,8 @@ print('Please enter a section of the site to load:')
 print('\'e\' or \'events\' for a list of all events this season.')
 print('\'t\' or \'team\' for a single team\'s information.')
 print('\'a\' or \'all\' for a list of all teams. (by page number on TBA)')
+print('\'d\' or \'district\' for a list of all current FIRST Districts & Codes')
+print('\'dr\' or \'distrank\' for district rankings for a specific district.')
 
 tba = tba()
 command = raw_input('')
@@ -128,6 +150,10 @@ elif ((command is 't') or (command is 'team')):
 elif ((command is 'a') or (command is 'all')):
 	global_page = input('Enter page number: ')
 	tba.get_all_team(global_page)
+elif ((command is 'd') or (command is 'district')):
+	tba.get_districts()
+elif ((command == 'dr') or (command is 'dist')):
+	tba.get_distrank()
 else:
 	print('Please enter a valid command.')
 
