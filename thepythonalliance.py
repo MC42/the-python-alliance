@@ -73,7 +73,6 @@ class tba:
 				print('Simple Name:\t\t' + bcolors.OKGREEN + event['short_name'] + bcolors.ENDC)
 			print('Location:\t\t' + bcolors.OKGREEN + event['location'] + bcolors.ENDC)
 			print('End Date:\t\t' + bcolors.OKBLUE + event['end_date'] + bcolors.ENDC)
-			print('Event Name:\t\t' + bcolors.OKGREEN + event['name'] + bcolors.ENDC)
 			if event['alliances'] != []:		
 				print('\t' + bcolors.BOLD + 'Alliances:' + bcolors.ENDC) #idk
 			for alli in event['alliances']:
@@ -148,16 +147,46 @@ class tba:
 		response = requests.get(myRequest, headers=header)
 		jsonified = response.json()
 		return jsonified['rookie_year']
-
+		
+	def get_event_info(self):
+		event_code = raw_input('Enter event code.')
+		myRequest = (baseURL + 'event/' + str(now.year) + str(event_code))
+		response = requests.get(myRequest, headers=header)
+		jsonified = response.json()
+		print(jsonified)
+		print('Event Name:\t\t' + bcolors.OKGREEN + jsonified['name'] + bcolors.ENDC)
+		print('Event Code:\t\t' + bcolors.BOLD + jsonified['event_code'].upper() + bcolors.ENDC)
+		if str(jsonified['official']).upper() == 'FALSE':
+			print('Official FIRST Event?\t' + bcolors.WARNING + str(jsonified['official']) + bcolors.ENDC)
+		elif str(jsonified['official']).upper() == 'TRUE':
+			print('Official FIRST Event?\t' + bcolors.OKGREEN + str(jsonified['official']) + bcolors.ENDC)
+		if jsonified['short_name'] != None:
+			print('Simple Name:\t\t' + bcolors.OKGREEN + jsonified['short_name'] + bcolors.ENDC)
+		print('Location:\t\t' + bcolors.OKGREEN + jsonified['location'] + bcolors.ENDC)
+		print('End Date:\t\t' + bcolors.OKBLUE + jsonified['end_date'] + bcolors.ENDC)
+		if jsonified['alliances'] != []:		
+			print('\t' + bcolors.BOLD + 'Alliances:' + bcolors.ENDC) #idk
+		for alli in jsonified['alliances']:
+			print('')
+			for picks in alli['picks']:
+				print(picks.upper())
+		
+	def help(self):
+		print('Please enter a section of the site to load:')
+		print('\'e\' or \'events\' for a list of all events this season.')
+		print('\'ev\' or \'event\' for information on a single event.')
+		print('\'t\' or \'team\' for a single team\'s information.')
+		print('\'a\' or \'all\' for a list of all teams. (by page number on TBA)')
+		print('\'d\' or \'district\' for a list of all current FIRST Districts & Codes')
+		print('\'dr\' or \'distrank\' for district rankings for a specific district.')
+		print('\'?\' or \'help\' for this page.')
+		
+		
 print(bcolors.HEADER + 'The Blue Alliance (Python Edition)' + bcolors.ENDC)
-print('Please enter a section of the site to load:')
-print('\'e\' or \'events\' for a list of all events this season.')
-print('\'t\' or \'team\' for a single team\'s information.')
-print('\'a\' or \'all\' for a list of all teams. (by page number on TBA)')
-print('\'d\' or \'district\' for a list of all current FIRST Districts & Codes')
-print('\'dr\' or \'distrank\' for district rankings for a specific district.')
 
 tba = tba()
+tba.help()
+
 command = raw_input('')
 command = command.split(' ')
 
@@ -171,6 +200,10 @@ elif ((command[0] is 'd') or (command[0] == 'district')):
 	tba.get_districts()
 elif ((command[0] == 'dr') or (command[0] == 'dist')):
 	tba.get_distrank()
+elif ((command[0] == 'ev') or (command[0] == 'event')):
+	tba.get_event_info()
+elif ((command[0] == '?') or (command[0] == 'help')):
+	tba.help()
 else:
 	print('Please enter a valid command.')
 
