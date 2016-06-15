@@ -27,7 +27,7 @@ class bcolors:
 
 class tba:
 	def get_team(self):
-		team = raw_input('Please enter a team:')
+		team = input('Please enter a team:')
 		myRequest = (baseURL + 'team/frc' + str(team))
 		response = requests.get(myRequest, headers=header)
 		jsonified = response.json()
@@ -81,10 +81,11 @@ class tba:
 				for picks in alli['picks']:
 					print(picks.upper())
 			print('--------------------------')
-			t = raw_input('') #Just to hold the location until they hit enter.
+			print('Prease enter to continue')
+			t = input('') #Just to hold the location until they hit enter.
 
 	def get_all_team(self):
-		page = raw_input('Enter a page number please: ')
+		page = input('Enter a page number please: ')
 		myRequest = (baseURL + 'teams/' + str(page))
 		response = requests.get(myRequest, headers=header)
 		jsonified = response.json()
@@ -123,7 +124,7 @@ class tba:
 
 
 	def get_distrank(self):
-		district=raw_input('Please enter a district code (Hint, can be gotten with \'d\' command): ')		
+		district=input('Please enter a district code (Hint, can be gotten with \'d\' command): ')		
 		myRequest = (baseURL + 'district/' + district.lower() + '/' + str(now.year) + '/rankings')
 		response = requests.get(myRequest, headers=header)
 		district_json = response.json()
@@ -158,7 +159,7 @@ print('\'d\' or \'district\' for a list of all current FIRST Districts & Codes')
 print('\'dr\' or \'distrank\' for district rankings for a specific district.')
 
 tba = tba()
-command = raw_input('')
+command = input('')
 command = command.split(' ')
 
 if ((command[0] is 'e') or (command[0] == 'events')):
