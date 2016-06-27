@@ -182,7 +182,7 @@ class tba:
 		print('\'?\' or \'help\' for this page.')
 		
 		
-print(bcolors.HEADER + 'The Blue Alliance (Python Edition)' + bcolors.ENDC)
+print(bcolors.OKBLUE + ' ________         ___       __  __               ___   _____  \n/_  __/ /  ___   / _ \__ __/ /_/ /  ___  ___    / _ | / / (_)__ ____  _______ \n / / / _ \/ -_) / ___/ // / __/ _ \/ _ \/ _ \  / __ |/ / / / _ `/ _ \/ __/ -_)\n/_/ /_//_/\__/ /_/   \_, /\__/_//_/\___/_//_/ /_/ |_/_/_/_/\_,_/_//_/\__/\__/ \n                    /___/  ' + bcolors.ENDC)
 
 tba = tba()
 tba.help()
